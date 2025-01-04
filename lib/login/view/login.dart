@@ -18,20 +18,28 @@ class _LoginScreenState extends State<LoginScreen> {
     String email = _emailController.text.trim();
     String password = _passwordController.text.trim();
 
-    User? user = await signInWithEmailAndPassword(email, password);
-    if (user != null) {
-      // Đăng nhập thành công, chuyển đến màn hình home
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
-      );
-    } else {
-      // Đăng nhập thất bại, hiển thị thông báo lỗi
+    try {
+      User? user = await signInWithEmailAndPassword(email, password);
+      if (user != null) {
+        // Đăng nhập thành công, chuyển đến màn hình home
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomeScreen()),
+        );
+      } else {
+        // Đăng nhập thất bại không rõ lý do
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Đăng nhập thất bại. Vui lòng thử lại.')),
+        );
+      }
+    } catch (e) {
+      // Hiển thị lỗi từ hàm signInWithEmailAndPassword
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Đăng nhập thất bại. Vui lòng thử lại.')),
+        SnackBar(content: Text('Lỗi: ${e.toString()}')),
       );
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
