@@ -1,37 +1,40 @@
-import 'package:admin_social_network/login/controller/login_firebase.dart';
-import 'package:admin_social_network/login/view/component/custom_button.dart';
-import 'package:admin_social_network/login/view/component/custom_text_field.dart';
+import 'package:admin_social_network/home/view/home.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../controller/login_firebase.dart';
+import 'component/custom_button.dart';
+import 'component/custom_text_field.dart';
 
-class Login extends StatelessWidget {
-  const Login({super.key});
+class LoginScreen extends StatefulWidget {
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  void _login() async {
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
+
+    User? user = await signInWithEmailAndPassword(email, password);
+    if (user != null) {
+      // Đăng nhập thành công, chuyển đến màn hình home
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+      );
+    } else {
+      // Đăng nhập thất bại, hiển thị thông báo lỗi
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Đăng nhập thất bại. Vui lòng thử lại.')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController emailController =TextEditingController();
-    TextEditingController pwController =TextEditingController();
-
-    Future<void> login() async {
-// prepare email & pw
-      final String email = emailController.text;
-      final String pw = pwController.text;
-
-
-// ensure that the email & pw fields are not empty
-      if (email.isNotEmpty && pw.isNotEmpty) {
-        // login!
-        if(await loginWithEmailAndPassword(email, pw)){
-
-        }
-      }
-// display error if some fields are empty
-      else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Please enter both email and password'),
-        ));
-      }
-    }
-
     return Scaffold(
       body: SafeArea(
         child: Center(
@@ -60,7 +63,7 @@ class Login extends StatelessWidget {
 
                 // email textfield
                 MyTextField(
-                  controller: emailController,
+                  controller: _emailController,
                   hintText: "Email",
                   obscureText: false,
                 ),
@@ -68,14 +71,14 @@ class Login extends StatelessWidget {
 
                 // pw textfield
                 MyTextField(
-                  controller: pwController,
+                  controller: _passwordController,
                   hintText: "Password",
                   obscureText: true,
                 ),
                 const SizedBox(height: 25),
 
                 // login button
-                MyButton(onTap:login
+                MyButton(onTap:_login
                     , text: "Login"),
                 const SizedBox(height: 50),
 
@@ -86,5 +89,4 @@ class Login extends StatelessWidget {
       ),
     );
   }
-
 }
