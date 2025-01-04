@@ -8,7 +8,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('Trang chủ')),
       body: Center(
-        child: Row(
+        child: Column(
           children: [
             Text('Chào mừng bạn đến với trang chủ!'),
             MyButton(onTap: Logout(), text: "Logout")
