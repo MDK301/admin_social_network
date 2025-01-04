@@ -18,7 +18,7 @@ class MyButton extends StatelessWidget {
         padding: const EdgeInsets.all(25),
         decoration: BoxDecoration(
           // color of button
-          color: Theme.of(context).colorScheme.tertiary,
+          color: Colors.purple.shade200,
           borderRadius: BorderRadius.circular(12),
         ),
         // curved corners

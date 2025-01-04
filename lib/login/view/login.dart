@@ -36,6 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.lightBlueAccent,
       body: SafeArea(
         child: Center(
           child: Padding(
@@ -45,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 // logo
                 Icon(
-                  Icons.lock_open_rounded,
+                  Icons.account_box,
                   size: 80,
                   color: Theme.of(context).colorScheme.primary,
                 ), // Icon

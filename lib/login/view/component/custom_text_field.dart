@@ -20,7 +20,7 @@ class MyTextField extends StatelessWidget {
       decoration: InputDecoration(
         // border when unselected
         enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Theme.of(context).colorScheme.tertiary),
+          borderSide: const BorderSide(color: Colors.black12),
           borderRadius: BorderRadius.circular(12),
         ),
 
@@ -32,7 +32,7 @@ class MyTextField extends StatelessWidget {
         ),
         hintText: hintText,
         hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
-        fillColor: Theme.of(context).colorScheme.secondary,
+        fillColor: Colors.black12,
         filled: true,
       ),
     );
