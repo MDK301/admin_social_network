@@ -1,3 +1,5 @@
+import 'package:admin_social_network/home/controller/home_firebase.dart';
+import 'package:admin_social_network/login/view/component/custom_button.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -6,7 +8,13 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('Trang chủ')),
       body: Center(
-        child: Text('Chào mừng bạn đến với trang chủ!'),
+        child: Row(
+          children: [
+            Text('Chào mừng bạn đến với trang chủ!'),
+            MyButton(onTap: Logout(), text: "Logout")
+          ],
+        ),
+
       ),
     );
   }
