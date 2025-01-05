@@ -6,6 +6,11 @@ import 'package:flutter/material.dart';
 
 import 'login/view/login.dart';
 
+//====================Requirement List
+//quãn lý bài
+//quãn lý nguoi dung
+//quãn xoa bai viet
+//bandlist bai vb,
 
 void main()async {
   WidgetsFlutterBinding.ensureInitialized();
