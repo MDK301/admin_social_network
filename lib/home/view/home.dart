@@ -2,7 +2,7 @@ import 'package:admin_social_network/home/controller/home_firebase.dart';
 import 'package:admin_social_network/login/view/login.dart';
 import 'package:flutter/material.dart';
 
-import '../../user/view/user.dart';
+import '../../user/view/user_list.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -41,7 +41,7 @@ class HomeScreen extends StatelessWidget {
               title: Text("Quản lý người dùng"),
               onTap: (){Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => User()),
+                MaterialPageRoute(builder: (context) => UserList()),
               );},
             ),
           )
