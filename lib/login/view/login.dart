@@ -61,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 // welcome back msg
                 Text(
-                  "Welcome back, you've been missed!",
+                  "Login if you're Admin!",
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
                     fontSize: 16,
