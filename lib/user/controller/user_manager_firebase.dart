@@ -1,14 +1,16 @@
+﻿import 'package:admin_social_network/post/model/post_model.dart';
 import 'package:admin_social_network/user/model/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../login/controller/login_firebase.dart';
+import '../../post/model/comment_model.dart';
 
 
 class ProfileManager {
 
-  //lấy user profile
-  Stream<List<ProfileUser>> getUserProfileStream() {
+  //lấy list user profile
+  Stream<List<ProfileUser>> getListUserProfileStream() {
     return FirebaseFirestore.instance
         .collection('users')
         .snapshots()
@@ -21,20 +23,22 @@ class ProfileManager {
   }
 
   //lấy user profile
-  Stream<List<ProfileUser>> getDeletedUserStream() {
+  Stream<ProfileUser?> getUserProfile(String uid) {
     return FirebaseFirestore.instance
-        .collection('tempdeleted')
+        .collection('users')
+        .where('uid', isEqualTo: uid)
         .snapshots()
         .map((snapshot) {
-      return snapshot.docs.map((doc) {
-        return ProfileUser.fromJson(doc.data());
-      }).toList()
-        ..sort((a, b) => a.email.compareTo(b.email)); // Sắp xếp tăng dần theo email
+      if (snapshot.docs.isNotEmpty) {
+        return ProfileUser.fromJson(snapshot.docs.first.data());
+      } else {
+        return null; // Trả về null nếu không tìm thấy user
+      }
     });
   }
 
-  //xóa tài khoản tam thoi
-  Future<void> tempDeleteUser(String uid) async {
+  //xóa tài khoản tam thoi (move user)
+  Future<void> tempDeleteUser_00(String uid) async {
     try {
       final docRef = FirebaseFirestore.instance.collection('users').doc(uid);
       final docSnapshot = await docRef.get();
@@ -52,8 +56,33 @@ class ProfileManager {
     }
   }
 
+  //xóa tài khoản tam thoi (add email user vào temodeleted)
+  Future<void> tempDeleteUser(String uid) async {
+    try {
+      final docRef = FirebaseFirestore.instance.collection('users').doc(uid);
+      final docSnapshot = await docRef.get();
+
+      if (docSnapshot.exists) {
+        final userData = docSnapshot.data();
+        final userEmail = userData?['email'] as String?;
+
+        if (userEmail != null) {
+          await FirebaseFirestore.instance.collection('tempdeleted').doc(uid).set({
+            'email': userEmail, // Chỉ lưu email vào tempdeleted
+          });print("User email added to tempdeleted successfully.");
+        } else {
+          print("User email not found in users collection.");
+        }
+      } else {
+        print("User not found in users collection.");
+      }
+    } catch (e) {
+      print("Error adding user email to tempdeleted: $e");
+    }
+  }
+
   //khôi phục user từ `tempdeleted` về `users`
-  Future<void> recoverDeletedUser(String uid) async {
+  Future<void> recoverDeletedUser_00(String uid) async {
     try {
       final docRef = FirebaseFirestore.instance.collection('tempdeleted').doc(uid);
       final docSnapshot = await docRef.get();
@@ -70,7 +99,25 @@ class ProfileManager {
       throw Exception(e);
     }
   }
-  //xóa user trong `tempdeleted` và trong Firebase Auth
+
+  //xóa user trong `tempdeleted`
+  Future<void> recoverDeletedUser(String uid) async {
+    try {
+      final docRef = FirebaseFirestore.instance.collection('tempdeleted').doc(uid);
+      final docSnapshot = await docRef.get();
+
+      if (docSnapshot.exists) {
+        await docRef.delete();
+        print("User email removed from tempdeleted successfully.");
+      } else {
+        print("User email not found in tempdeleted collection.");
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  //xóa user trong `tempdeleted` và trong Firebase Auth(unable)
   Future<void> deleteUser(String uid) async {
   //   try {
   //     final docRef = FirebaseFirestore.instance.collection('tempdeleted').doc(uid);
@@ -105,6 +152,35 @@ class ProfileManager {
   //     print("Error deleting user: $e");
   //   }
   }
+
+//lay noi dung trong temp_deleted
+  Stream<List<String>> getTempDeletedEmailsStream() {
+    return FirebaseFirestore.instance
+        .collection('tempdeleted')
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((doc) => doc['email'] as String).toList());
+  }
+
+  //hàm này để quản lý cmt của người đó
+  Stream<List<Comment>> getCommentsByUser(String uid) {
+    return FirebaseFirestore.instance
+        .collection('posts')
+        .snapshots()
+        .map((snapshot) {
+      List<Comment> userComments = [];
+      for (var doc in snapshot.docs) {
+        final data = doc.data();
+        final comments = data['comments'] as List<dynamic>? ?? [];
+        for (var comment in comments) {
+          if (comment['userId'] == uid) {
+            userComments.add(Comment.fromJson(comment as Map<String, dynamic>));
+          }
+        }
+      }
+      return userComments;
+    });
+  }
+
 
 }
 

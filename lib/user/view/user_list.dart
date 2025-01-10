@@ -16,7 +16,7 @@ class UserList extends StatelessWidget {
         title: Text("Danh sách người dùng"),
       ),
       body: StreamBuilder<List<ProfileUser>>(
-        stream: profileManager.getUserProfileStream(),
+        stream: profileManager.getListUserProfileStream(),
         builder: (context, snapshot) {
           if (snapshot.hasData && snapshot.data != null) {
 
@@ -41,11 +41,33 @@ class UserList extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(user[index].name, style: TextStyle(color: Colors.grey)),
-                          Row(
-                            children: [
-                              Text("Status: "),
-                              Text("$status",style: TextStyle(color: status=="Active"? Colors.green:Colors.red),),
-                            ],
+                          StreamBuilder<List<String>>(
+                            stream:profileManager.getTempDeletedEmailsStream(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const CircularProgressIndicator();
+                              }
+                              if (snapshot.hasData) {
+                                final tempDeletedEmails = snapshot.data!;
+                                if (tempDeletedEmails
+                                    .contains(user[index].email)) {
+                                  status = "On lock";
+                                }
+                              }
+                              return Row(
+                                children: [
+                                  const Text("Status: "),
+                                  Text(
+                                    status,
+                                    style: TextStyle(
+                                        color: status == "Active"
+                                            ? Colors.green
+                                            : Colors.red),
+                                  ),
+                                ],
+                              );
+                            },
                           ),
                         ],
                       ),
