@@ -18,32 +18,38 @@ class UserList extends StatelessWidget {
       body: StreamBuilder<List<ProfileUser>>(
         stream: profileManager.getListUserProfileStream(),
         builder: (context, snapshot) {
+          //null check
           if (snapshot.hasData && snapshot.data != null) {
-
-            // Kiểm tra xem dữ liệu có sẵn và khác null hay không
-            final user = snapshot.data!; // Sử dụng toán tử khẳng định null một cách an toàn
-            String status="Active";
+            final user = snapshot.data!;
             return ListView.builder(
               itemCount: user.length,
               itemBuilder: (context, index) {
                 return Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: Container(
+                    //trang tri for each box
                     decoration: BoxDecoration(
                       color: Colors.white70,
                       border: Border.all(color: Colors.grey, width: 1.0), // Khung viền
                       borderRadius: BorderRadius.circular(12.0), // Bo góc (tuỳ chọn)
                     ),
+                    //box container
                     child: ListTile(
-                      title: Text(user[index].email,style: TextStyle(fontWeight: FontWeight.bold),),
+
+                      //emil
+                      title: Text(user[index].email,style: const TextStyle(fontWeight: FontWeight.bold),),
                       subtitle:
                       Row(
+                        //căn space for name & status
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(user[index].name, style: TextStyle(color: Colors.grey)),
+                          //name
+                          Text(user[index].name, style: const TextStyle(color: Colors.grey)),
+                          //status =))
                           StreamBuilder<List<String>>(
                             stream:profileManager.getTempDeletedEmailsStream(),
                             builder: (context, snapshot) {
+                              String status="Active";
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
                                 return const CircularProgressIndicator();

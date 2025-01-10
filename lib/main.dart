@@ -11,6 +11,7 @@ import 'login/view/login.dart';
 //quãn lý nguoi dung
 //quãn xoa bai viet
 //bandlist bai vb,
+// ai bi report >15 = khoa tk
 
 void main()async {
   WidgetsFlutterBinding.ensureInitialized();
