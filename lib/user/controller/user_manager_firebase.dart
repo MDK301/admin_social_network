@@ -9,7 +9,7 @@ import '../../post/model/comment_model.dart';
 
 class ProfileManager {
 
-  //lấy list user profile
+  //lấy list user profile cho stream
   Stream<List<ProfileUser>> getListUserProfileStream() {
     return FirebaseFirestore.instance
         .collection('users')
@@ -22,7 +22,7 @@ class ProfileManager {
     });
   }
 
-  //lấy user profile
+  //lấy user profile cho stream
   Stream<ProfileUser?> getUserProfile(String uid) {
     return FirebaseFirestore.instance
         .collection('users')
@@ -36,6 +36,8 @@ class ProfileManager {
       }
     });
   }
+
+
 
   //xóa tài khoản tam thoi (move user)
   Future<void> tempDeleteUser_00(String uid) async {

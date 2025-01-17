@@ -1,5 +1,6 @@
 import 'package:admin_social_network/home/controller/home_firebase.dart';
 import 'package:admin_social_network/login/view/login.dart';
+import 'package:admin_social_network/post/view/all_report_post.dart';
 import 'package:flutter/material.dart';
 
 import '../../user/view/user_list.dart';
@@ -74,10 +75,10 @@ class HomeScreen extends StatelessWidget {
               //duyệt bài viết
               GestureDetector(
                 onTap: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => UserList()),
-                  // );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AllReportPost()),
+                  );
                 },
                 child: SizedBox(
                   width: 150,
