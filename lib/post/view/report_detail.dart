@@ -4,6 +4,7 @@
 import 'package:admin_social_network/post/controller/post_report_firebase.dart';
 import 'package:admin_social_network/post/model/post_report.dart';
 import 'package:admin_social_network/user/model/user_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../../user/controller/user_manager_firebase.dart';
@@ -24,20 +25,60 @@ class _ReportDetailState extends State<ReportDetail> {
   //Post Detail
   ProfileManager profileManager = ProfileManager();
   PostReportFirebase postInfo = PostReportFirebase();
+  Future<void> _removeReport(String id) async {
+    try {
+      // Remove the report document
+      await FirebaseFirestore.instance
+          .collection('reports')
+          .doc(id)
+          .delete();
 
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Report removed successfully!")),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to remove report: $e")),
+      );
+    }
+  }
+
+  Future<void> _deletePostAndReport(String id) async {
+    try {
+      // Delete the post document
+      await FirebaseFirestore.instance
+          .collection('posts')
+          .doc(id)
+          .delete();
+
+      // Delete the report document
+      await FirebaseFirestore.instance
+          .collection('reports')
+          .doc(id)
+          .delete();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Post and Report deleted successfully!")),
+      );
+      Navigator.pop(context); // Go back after deleting the post and report
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to delete post and report: $e")),
+      );
+    }
+  }
   @override
   Widget build(BuildContext context) {
-    final postreport = PostReportFirebase();
 
     return Scaffold(
         appBar: AppBar(
           actions: [
             TextButton(onPressed: (){
-
+              _removeReport(widget.report.id);
             }, child: const Text("Remove")),
 
             TextButton(onPressed: (){
-
+              _deletePostAndReport(widget.report.id);
             }, child: const Text("Delete Post")),
           ],
         ),
